@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="Architect">
 <meta name="theme-color" content="#0D0D0F">
 <title>The Architect</title>
-<!-- Fully offline - no external dependencies -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
   --bg:#0D0D0F;--bg2:#141418;--bg3:#1A1A20;--surface:#1E1E25;--surface2:#262630;--surface3:#2E2E3A;
@@ -226,7 +227,7 @@ body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xm
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-title">Add New Habit</div>
     <div class="form-group"><label class="form-label">Habit Name</label><input class="form-input" id="m-name" placeholder="e.g. 30 min Walk" maxlength="60"></div>
-    <div class="form-group"><label class="form-label">Category / Pillar</label><select class="form-select" id="m-cat"></select></div>
+    <div class="form-group"><label class="form-label">Category / Pillar</label><select class="form-select" id="m-cat" onchange="toggleCustomCat()"></select><input class="form-input" id="m-cat-custom" placeholder="Type new category name" maxlength="30" style="display:none;margin-top:8px"></div>
     <div class="form-group"><label class="form-label">Frequency</label><div class="freq-pills"><button class="freq-pill active" id="fp-daily" onclick="mFreq='daily';updFP()">Daily</button><button class="freq-pill" id="fp-weekly" onclick="mFreq='weekly';updFP()">Weekly</button><button class="freq-pill" id="fp-monthly" onclick="mFreq='monthly';updFP()">Monthly</button></div></div>
     <div class="form-group"><label class="form-label">Time (optional)</label><input class="form-input" id="m-time" placeholder="e.g. 7:00 AM" maxlength="20"></div>
     <div class="form-group"><label class="form-label">XP Reward</label><select class="form-select" id="m-xp"><option value="5">5 XP — Easy</option><option value="10" selected>10 XP — Standard</option><option value="15">15 XP — Moderate</option><option value="25">25 XP — Hard</option><option value="50">50 XP — Epic</option></select></div>
@@ -266,15 +267,13 @@ function getLvl(xp){let l=0;for(let i=0;i<LVLS.length;i++)if(xp>=LVLS[i].x)l=i;c
 
 // Persistence
 const SK='architect-v4';
-async function save(){
+function save(){
   const d={totalXP:S.totalXP,streak:S.streak,lastDate:S.lastDate,completions:S.completions,habits:S.habits,cats:S.cats};
-  try{if(window.storage&&window.storage.set)await window.storage.set(SK,JSON.stringify(d))}catch(e){}
-  window._ab=d;
+  try{localStorage.setItem(SK,JSON.stringify(d))}catch(e){}
 }
-async function load(){
+function load(){
   let d=null;
-  try{if(window.storage&&window.storage.get){const r=await window.storage.get(SK);if(r&&r.value)d=JSON.parse(r.value)}}catch(e){}
-  if(!d&&window._ab)d=window._ab;
+  try{const raw=localStorage.getItem(SK);if(raw)d=JSON.parse(raw)}catch(e){}
   if(d){S.habits=d.habits||JSON.parse(JSON.stringify(DH));S.cats=d.cats||[...DCATS];S.totalXP=d.totalXP||0;S.streak=d.streak||0;S.lastDate=d.lastDate||'';S.completions=d.completions||{}}
   else{S.habits=JSON.parse(JSON.stringify(DH));S.cats=[...DCATS]}
   S.habits.forEach(h=>{if(!S.cats.includes(h.cat))S.cats.push(h.cat)});
@@ -342,7 +341,8 @@ function setFreq(f){dashFreq=f;['daily','weekly','monthly'].forEach(x=>document.
 // Modal
 function updFP(){['daily','weekly','monthly'].forEach(x=>document.getElementById('fp-'+x).classList.toggle('active',x===mFreq))}
 function selColor(c){mCol=c;document.querySelectorAll('.color-swatch').forEach(s=>s.classList.toggle('sel',s.style.backgroundColor===c||s.style.background===c))}
-function buildCats(){document.getElementById('m-cat').innerHTML=S.cats.map(c=>`<option value="${c}">${c}</option>`).join('')}
+function buildCats(){document.getElementById('m-cat').innerHTML=S.cats.map(c=>`<option value="${c}">${c}</option>`).join('')+'<option value="__new__">+ New Category</option>';document.getElementById('m-cat-custom').style.display='none';document.getElementById('m-cat-custom').value=''}
+function toggleCustomCat(){const sel=document.getElementById('m-cat').value;document.getElementById('m-cat-custom').style.display=sel==='__new__'?'block':'none';if(sel==='__new__')document.getElementById('m-cat-custom').focus()}
 function buildColors(s){document.getElementById('color-row').innerHTML=COLORS.map(c=>`<div class="color-swatch${c===s?' sel':''}" style="background:${c}" onclick="selColor('${c}')"></div>`).join('')}
 function closeModal(){document.getElementById('habit-overlay').classList.remove('open')}
 
@@ -365,7 +365,10 @@ function openEditModal(id){
 }
 function saveHabit(){
   const name=document.getElementById('m-name').value.trim();if(!name){showToast('Enter a name');return}
-  const cat=document.getElementById('m-cat').value,time=document.getElementById('m-time').value.trim(),xp=parseInt(document.getElementById('m-xp').value);
+  const catSel=document.getElementById('m-cat').value,catCustom=document.getElementById('m-cat-custom').value.trim();
+  const cat=catSel==='__new__'?catCustom:catSel;
+  if(!cat){showToast('Enter a category');return}
+  const time=document.getElementById('m-time').value.trim(),xp=parseInt(document.getElementById('m-xp').value);
   if(editId){const h=S.habits.find(x=>x.id===editId);if(h){h.name=name;h.cat=cat;h.freq=mFreq;h.xp=xp;h.col=mCol;h.time=time||undefined}showToast('Updated ✓')}
   else{S.habits.push({id:uid(),name,cat,freq:mFreq,xp,col:mCol,time:time||undefined});if(!S.cats.includes(cat))S.cats.push(cat);showToast('Added ⚡')}
   save();closeModal();renderAll();
@@ -406,6 +409,9 @@ let toastTimer;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200)}
 
 load();
+
+// Register Service Worker for offline support
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
 </html>
