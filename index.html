@@ -238,37 +238,20 @@ body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xm
 
 <script>
 const COLORS=['#C9A55C','#E07858','#6BAF8D','#5B8EC9','#9B7FD0','#3ABFA0','#C46A7A','#8B7355','#D4A843'];
-const CC={'Spirituality':'#C9A55C','Family':'#E07858','Productivity':'#5B8EC9','Physical Training':'#9B7FD0','Earnings':'#6BAF8D','Long Term':'#8B7355'};
+const CC={'Health':'#6BAF8D','Growth':'#5B8EC9','Home':'#C9A55C','Finance':'#9B7FD0'};
 const LVLS=[{n:'Beginner',x:0},{n:'Seeker',x:100},{n:'Practitioner',x:300},{n:'Committed',x:600},{n:'Disciplined',x:1000},{n:'Warrior',x:1600},{n:'Master',x:2400},{n:'Champion',x:3500},{n:'Legend',x:5000},{n:'Enlightened',x:7000}];
 const LSUBS=['Every journey begins with a single step.','The seed of discipline has been planted.','You are building something real.','Your identity is beginning to shift.','Others notice. You are different now.','You train when others sleep.','Discipline has become your nature.','You inspire without trying.','Few ever reach here. Press on.','You became who you always wanted to be.'];
 const DH=[
-  {id:'s1',name:'Morning Meditation',cat:'Spirituality',freq:'daily',xp:10,time:'6:00 AM',col:'#C9A55C'},
-  {id:'s2',name:'Evening Meditation',cat:'Spirituality',freq:'daily',xp:10,time:'5:00 PM',col:'#C9A55C'},
-  {id:'s3',name:'Shiv Abhishek',cat:'Spirituality',freq:'daily',xp:10,time:'8:00 AM',col:'#C9A55C'},
-  {id:'f1',name:'Mother, Father, Sister',cat:'Family',freq:'daily',xp:10,col:'#E07858'},
-  {id:'f2',name:'Wife and Kids',cat:'Family',freq:'daily',xp:10,col:'#E07858'},
-  {id:'p1',name:'5 Pages — Work Book',cat:'Productivity',freq:'daily',xp:10,col:'#5B8EC9'},
-  {id:'p2',name:'5 Pages — Spiritual Book',cat:'Productivity',freq:'daily',xp:10,col:'#5B8EC9'},
-  {id:'pt1',name:'50 Pushups',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'pt2',name:'20 Situps',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'pt3',name:'10 min Anulomvilom',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'pt4',name:'Energy Exercises 1',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'pt5',name:'Energy Exercises 2',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'pt6',name:'15 Min Stretch',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'pt7',name:'5000 Steps',cat:'Physical Training',freq:'daily',xp:10,col:'#9B7FD0'},
-  {id:'e1',name:'Trading / Backtesting',cat:'Earnings',freq:'daily',xp:10,time:'8:30 AM',col:'#6BAF8D'},
-  {id:'e2',name:'YouTube Monday Video',cat:'Earnings',freq:'weekly',xp:25,col:'#6BAF8D'},
-  {id:'e3',name:'YouTube Wednesday Video',cat:'Earnings',freq:'weekly',xp:25,col:'#6BAF8D'},
-  {id:'e4',name:'Telegram Community Post',cat:'Earnings',freq:'weekly',xp:25,col:'#6BAF8D'},
-  {id:'e5',name:'X Community Post',cat:'Earnings',freq:'weekly',xp:25,col:'#6BAF8D'},
-  {id:'e6',name:'LinkedIn Post',cat:'Earnings',freq:'weekly',xp:25,col:'#6BAF8D'},
-  {id:'e7',name:'Courses & Training',cat:'Earnings',freq:'weekly',xp:25,col:'#6BAF8D'},
-  {id:'lt1',name:'Family Investment',cat:'Long Term',freq:'monthly',xp:50,col:'#8B7355'},
-  {id:'lt2',name:'Surrounding',cat:'Long Term',freq:'monthly',xp:50,col:'#8B7355'},
-  {id:'lt3',name:'Donation',cat:'Long Term',freq:'monthly',xp:50,col:'#8B7355'},
-  {id:'lt4',name:'Friends',cat:'Long Term',freq:'monthly',xp:50,col:'#8B7355'}
+  {id:'d1',name:'Morning Walk',cat:'Health',freq:'daily',xp:10,time:'6:30 AM',col:'#6BAF8D'},
+  {id:'d2',name:'Read 10 Pages',cat:'Growth',freq:'daily',xp:10,col:'#5B8EC9'},
+  {id:'d3',name:'Meditate 10 min',cat:'Health',freq:'daily',xp:10,time:'7:00 AM',col:'#6BAF8D'},
+  {id:'d4',name:'Journal',cat:'Growth',freq:'daily',xp:10,time:'9:00 PM',col:'#5B8EC9'},
+  {id:'d5',name:'No Junk Food',cat:'Health',freq:'daily',xp:15,col:'#6BAF8D'},
+  {id:'w1',name:'Weekly Review',cat:'Growth',freq:'weekly',xp:25,col:'#5B8EC9'},
+  {id:'w2',name:'Deep Cleaning',cat:'Home',freq:'weekly',xp:25,col:'#C9A55C'},
+  {id:'m1',name:'Budget Review',cat:'Finance',freq:'monthly',xp:50,col:'#9B7FD0'}
 ];
-const DCATS=['Spirituality','Family','Productivity','Physical Training','Earnings','Long Term'];
+const DCATS=['Health','Growth','Home','Finance'];
 
 let S={totalXP:0,streak:0,lastDate:'',completions:{},habits:[],cats:[]};
 let dashFreq='daily',editId=null,mFreq='daily',mCol=COLORS[0];
@@ -426,4 +409,3 @@ load();
 </script>
 </body>
 </html>
-
